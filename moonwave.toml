@@ -1,5 +1,5 @@
 title = "Binder"  # From Git
-# gitRepoUrl = "https://github.com/evaera/moonwave" # From Git - No repo created yet
+gitRepoUrl = "https://github.com/Pr0pelled/Binder" # From Git
 
 gitSourceBranch = "main"
 changelog = true
@@ -11,11 +11,11 @@ onBrokenMarkdownLinks = "warn"
 # favicon = ""
 
 # From git:
-# organizationName = "AuthorName"
-# projectName = "MyProjectName"
-# url = "https://AuthorName.github.io"
-# baseUrl = "/MyProjectName"
-# tagline = "Your project's tagline"
+organizationName = "Pr0pelled"
+projectName = "Binder"
+url = "https://organizationName.github.io"
+baseUrl = "/Binder/"
+tagline = "A custom binder implementation using CollectionService"
 
 [home]
 enabled = true
