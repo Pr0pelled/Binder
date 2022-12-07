@@ -1,0 +1,26 @@
+title = "Binder"  # From Git
+# gitRepoUrl = "https://github.com/evaera/moonwave" # From Git - No repo created yet
+
+gitSourceBranch = "main"
+changelog = true
+classOrder = []
+
+[docusaurus]
+onBrokenLinks = "throw"
+onBrokenMarkdownLinks = "warn"
+# favicon = ""
+
+# From git:
+# organizationName = "AuthorName"
+# projectName = "MyProjectName"
+# url = "https://AuthorName.github.io"
+# baseUrl = "/MyProjectName"
+# tagline = "Your project's tagline"
+
+[home]
+enabled = true
+includeReadme = false
+
+[footer]
+style = "dark"
+copyright = "Copyright © 2021 Pr0pelled. Built with Moonwave and Docusaurus"

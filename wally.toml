@@ -1,0 +1,9 @@
+[package]
+name = "jaybu/binder"
+version = "0.1.0"
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "shared"
+
+[dependencies]
+Cleanser = "robloxiandemo/cleanser@0.1.8"
+Promise = "evaera/promise@4.0.0"
