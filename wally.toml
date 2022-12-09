@@ -6,4 +6,5 @@ realm = "shared"
 
 [dependencies]
 Cleanser = "robloxiandemo/cleanser@0.1.8"
-Promise = "evaera/promise@4.0.0"
+Signal = "robloxiandemo/signal@0.1.9"
+Promise = "robloxiandemo/promise-demo@0.1.4"
