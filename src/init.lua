@@ -42,10 +42,143 @@ local Binder: module = {}
 	:::
 
 	@within Binder
+	@tag Object Methods
 	@return boolean --Whether or not the process was successful
 ]=]
 function Binder:Start(): boolean
 
+end
+
+--[=[
+	Returns the name of the tag used by the binder
+
+	@within Binder
+	@tag Object Methods
+	@return string --The name of the tag
+]=]
+function Binder:GetTag(): string
+	return (self) and (self._tagName) or ""
+end
+
+--[=[
+	Returns the constructor used to create classes for the binder
+
+	@within Binder
+	@tag Object Methods
+	@return function --The constructor
+]=]
+function Binder:GetConstructor(): func
+	return (self) and (self._constructor) or (function() end)
+end
+
+--[=[
+	Returns a signal which is fired every time a class is bound
+
+	@within Binder
+	@tag Object Methods
+	@return Signal
+]=]
+function Binder:GetClassAddedSignal(): module
+	if self and self._classAddedSignal and type(self._classAddedSignal)=="function" then
+		return self._classAddedSignal
+	end
+
+	--Create it
+	self._classAddedSignal = Signal.new()
+	self._cleanser:Grant(self._classAddedSignal)
+	return self._classAddedSignal
+end
+
+--[=[
+	Returns a signal which is fired every time a class is being unbound
+	:::caution
+	If any functions connected to this signal yield, it will yield the removal of the class
+	:::
+
+	@within Binder
+	@tag Object Methods
+	@return Signal
+]=]
+function Binder:GetClassRemovingSignal(): module
+	if self and self._classRemovingSignal and type(self._classRemovingSignal)=="function" then
+		return self._classRemovingSignal
+	end
+
+	--Create it
+	self._classRemovingSignal = Signal.new()
+	self._cleanser:Grant(self._classRemovingSignal)
+	return self._classRemovingSignal
+end
+
+--[=[
+	Returns a signal which is fired every time a class has been unbound
+
+	@within Binder
+	@tag Object Methods
+	@return Signal
+]=]
+function Binder:GetClassRemovedSignal(): module
+	if self and self._classRemovedSignal and type(self._classRemovedSignal)=="function" then
+		return self._classRemovedSignal
+	end
+
+	--Create it
+	self._classRemovedSignal = Signal.new()
+	self._cleanser:Grant(self._classRemovedSignal)
+	return self._classRemovedSignal
+end
+
+--[=[
+	Returns a table containing all bound classes
+
+	:::note
+	The returned table is not the same as the internally used one, so it can be edited without worry of breaking the binder
+	:::
+
+	@within Binder
+	@tag Object Methods
+	@return table --A new table containing all bound classes
+]=]
+function Binder:GetAll(): {}
+	local all = {}
+	for _: Instance, class: module in self._classes do
+		table.insert(all, class)
+	end
+	return all
+end
+
+--[=[
+	Returns a table containing all bound instances
+
+	:::note
+	The returned table is not the same as the internally used one, so it can be edited without worry of breaking the binder
+	:::
+
+	@within Binder
+	@tag Object Methods
+	@return table --A new table containing all bound instances
+]=]
+function Binder:GetAllInstances(): {}
+	local all = {}
+	for inst: Instance, _: boolean in self._instances do
+		table.insert(all, inst)
+	end
+	return all
+end
+
+--[=[
+	Binds the given instance
+
+	@within Binder
+	@param inst Instance --The instance to be bound
+	@return table --The bound class
+]=]
+function Binder:Bind(inst: Instance): module
+	--Assert type
+	assert(typeof(inst)=="Instance", "Argument passed to :Bind() must be an Instance")
+
+	--Call constructor
+	local class = self._constructor(inst, self._constructorArgs)
 end
 
 --[ Class ]
@@ -73,6 +206,7 @@ end
 	@param constructor function --The function to run when a new instance containing the tag is created
 	@param autostart boolean --Dictates whether or not to automatically start the binder. DEFAULT: true
 	@param ... any? --Arguments to be passed to the constructor
+	@tag Constructors
 	@return BinderObject
 ]=]
 function Binder.new(tagName: string, constructor: func, autostart: boolean?, ...: any?): BinderObject
@@ -89,16 +223,27 @@ function Binder.new(tagName: string, constructor: func, autostart: boolean?, ...
 	self._constructor = constructor --The constructor function
 	self._constructorArgs = {...} --The arguments passed to the constructor function
 
-	self._instances = {} --The instances which have been successfully bound to the tag (dict; [inst]: boolean)
+	self._instances = {} --The instances which have been successfully bound to the tag (arr; [number]: inst)
 	self._classes = {} --The classes which have successfully been bound to instances (dict; [inst]: class)
 
-	self._pending = {} --Instances which have been added, but not yet successfully bound (dict; [inst]: boolean)
+	self._pending = {} --Instances which have been added, but not yet successfully bound (arr; [number]: inst)
 
-	self._loaded = false
+	self._loaded = false --Whether or not the binderObject has been loaded
 
+	--Checking autostart
 	if autostart==true then
-		task.spawn(self.Start, self)
+		task.spawn(self.Start, self) --Starting the binderObject
 	end
+
+	--Assuring loaded status
+	task.delay(5, function()
+		if not self._loaded then
+			warn(("Binder for %q has not loaded! Run :Start() on it to resolve this!"):format(self._tagName))
+		end
+	end)
+
+	--Returning the binderObject
+	return self
 end
 
 --[=[
@@ -106,10 +251,14 @@ end
 
 	@within Binder
 	@param object any --The object being checked
+	@tag Class Methods
 	@return boolean
 ]=]
 function Binder.is(object: any): boolean
-
+	--Check through and assure existence of all functions
+	return type(object)=="table"
+		and type(object.Start)=="function"
+		and type(object.GetTage)=="function"
 end
 
 --Returning Binder
