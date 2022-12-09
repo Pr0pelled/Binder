@@ -160,7 +160,7 @@ end
 ]=]
 function Binder:GetAllInstances(): {}
 	local all = {}
-	for inst: Instance, _: boolean in self._instances do
+	for _:number, inst: Instance in self._instances do
 		table.insert(all, inst)
 	end
 	return all
@@ -169,22 +169,79 @@ end
 --[=[
 	Binds the given instance
 
+	:::danger
+	If an error is encountered, nothing is returned
+	:::
+
 	@within Binder
 	@param inst Instance --The instance to be bound
+	@tag Object Methods
 	@return table --The bound class
 ]=]
-function Binder:Bind(inst: Instance): module
+function Binder:Bind(inst: Instance): module?
+
 	--Assert type
 	assert(typeof(inst)=="Instance", "Argument passed to :Bind() must be an Instance")
 
+	--Assuring non-existence
+	if self._classes[inst] then
+		warn(("%q is already bound to %q!"):format(inst:GetFullName(), self._tagName))
+		return nil
+	end
+
 	--Call constructor
 	local class = self._constructor(inst, self._constructorArgs)
+
+	--Adding to the cleanser
+	self._cleanser:Grant(class)
+
+	--Storing
+	table.insert(self._instances, inst)
+	self._classes[inst] = class
+
+	--Firing events
+	if self._classAddedSignal and self._classAddedSignal.Fire then
+		self._classAddedSignal:Fire(class) --Fires signal, passing class
+	end
+	
+	--Returning class
+	return class
+end
+
+--[=[
+	Unbind the given instance and destroy the associated class
+
+	:::caution
+	If there is no `:Destroy()` method of the class, there may be memory leaks.
+	:::
+
+	:::caution
+	If the instance is not bound, this will fail
+	:::
+	
+	@within Binder
+	@param inst Instance --The instance to be unbound
+	@tag Object Methods
+	@return boolean --Whether the class was successfully unbound
+]=]
+function Binder:Unbind(inst: Instance): boolean
+
+	--Assert type
+	assert(typeof(inst)=="Instance", "Argument passed to :Bind() must be an Instance")
+
+	--Assuring existence
+	if not self._classes[inst] then
+		warn(("%q is not bound to %q!"):format(inst:GetFullName(), self._tagName))
+		return false
+	end
+	
 end
 
 --[ Class ]
 
 --[=[
 	Constructs a new `Binder`
+	
 	:::tip NOTE
 	If you wish to pass constructor arguments, you must also pass a value for `autostart`
 	:::
@@ -238,7 +295,7 @@ function Binder.new(tagName: string, constructor: func, autostart: boolean?, ...
 	--Assuring loaded status
 	task.delay(5, function()
 		if not self._loaded then
-			warn(("Binder for %q has not loaded! Run :Start() on it to resolve this!"):format(self._tagName))
+			warn(("Binder for %q has not loaded! Call :Start() on it to resolve this!"):format(self._tagName))
 		end
 	end)
 
@@ -258,7 +315,15 @@ function Binder.is(object: any): boolean
 	--Check through and assure existence of all functions
 	return type(object)=="table"
 		and type(object.Start)=="function"
-		and type(object.GetTage)=="function"
+		and type(object.GetTag)=="function"
+		and type(object.GetConstructor)=="function"
+		and type(object.GetClassAddedSignal)=="function"
+		and type(object.GetClassRemovingSignal)=="function"
+		and type(object.GetClassRemovedSignal)=="function"
+		and type(object.GetAll)=="function"
+		and type(object.GetAllInstances)=="function"
+		and type(object.Bind)=="function"
+		and type(object.Unbind)=="function"
 end
 
 --Returning Binder
