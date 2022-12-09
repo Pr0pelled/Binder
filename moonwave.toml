@@ -4,6 +4,11 @@ gitRepoUrl = "https://github.com/Pr0pelled/Binder" # From Git
 gitSourceBranch = "main"
 changelog = true
 classOrder = []
+apiCategories = [
+	"Constructors",
+	"Class Methods",
+	"Object Methods"
+]
 
 [docusaurus]
 onBrokenLinks = "throw"
