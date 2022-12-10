@@ -1,10 +1,29 @@
 [package]
-name = "jaybu/binder"
+name = "pr0pelled/binder"
+description = "Bind classes to Roblox Instances using CollectionService"
 version = "0.1.0"
-registry = "https://github.com/UpliftGames/wally-index"
+license = "MIT"
+authors = ["Pr0pelled"]
 realm = "shared"
+registry = "https://github.com/UpliftGames/wally-index"
+
+include = [
+	"src",
+	"README.md",
+	"wally.toml"
+]
+
+exclude = [
+	"docs",
+	"build",
+	"Packages",
+	"aftman.toml",
+	"default.project.json",
+	"moonwave.toml",
+	"selene.toml",
+	"wally.lock"
+]
 
 [dependencies]
-Cleanser = "robloxiandemo/cleanser@0.1.8"
-Signal = "robloxiandemo/signal@0.1.9"
-Promise = "robloxiandemo/promise-demo@0.1.4"
+Cleanser = "robloxiandemo/cleanser@^0.1.8"
+Signal = "robloxiandemo/signal@^0.1.9"
