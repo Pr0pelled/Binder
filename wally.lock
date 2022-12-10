@@ -5,4 +5,14 @@ registry = "test"
 [[package]]
 name = "jaybu/binder"
 version = "0.1.0"
+dependencies = [["Cleanser", "robloxiandemo/cleanser@0.1.8"], ["Signal", "robloxiandemo/signal@0.1.9"]]
+
+[[package]]
+name = "robloxiandemo/cleanser"
+version = "0.1.8"
 dependencies = []
+
+[[package]]
+name = "robloxiandemo/signal"
+version = "0.1.9"
+dependencies = [["Cleanser", "robloxiandemo/cleanser@0.1.8"]]
