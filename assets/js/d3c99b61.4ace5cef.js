@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkdocs=self.webpackChunkdocs||[]).push([[435],{63891:s=>{s.exports=JSON.parse('{"sourceUrl":"https://github.com/Pr0pelled/Binder/blob/main","baseUrl":"/Binder/","classOrder":[],"apiCategories":["Constructors","Class Methods","Object Methods"]}')}}]);
