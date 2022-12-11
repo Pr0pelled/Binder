@@ -40,8 +40,8 @@ type BinderObject = {
 local CollectionService: CollectionService = game:GetService("CollectionService")
 
 --[[ Dependencies ]]
-local Cleanser = require(script:WaitForChild("Cleanser"))
-local Signal = require(script:WaitForChild("Signal"))
+local Cleanser = require(script.Parent:WaitForChild("Cleanser"))
+local Signal = require(script.Parent:WaitForChild("Signal"))
 
 
 --[[ Variables ]]

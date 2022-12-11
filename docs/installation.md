@@ -16,7 +16,7 @@ Initialize `wally`:
 ### Step 2:
 Add the following to your `wally.toml` file:
 ```lua
-Binder = "pr0pelled/binder@0.1.0"
+Binder = "pr0pelled/binder@0.1.2"
 ```
 
 ### Step 3:
